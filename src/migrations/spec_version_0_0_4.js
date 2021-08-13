@@ -23,7 +23,7 @@ module.exports = {
   apply: async ({ manifestFile }) => {
     await toolbox.patching.patch(manifestFile, {
       insert: 'specVersion: 0.0.4',
-      replace: new RegExp(`['"]?0.0.[2-3]['"]?`),
+      replace: new RegExp(`specVersion: ['"]?0.0.[23]['"]?`),
     })
   },
 }
