@@ -6,7 +6,6 @@ import {
   Value,
   ValueKind,
   store,
-  Address,
   Bytes,
   BigInt,
   BigDecimal
@@ -16,6 +15,10 @@ export class NewGravatar extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
+
+    this.set("owner", Value.fromBytes(Bytes.empty()));
+    this.set("displayName", Value.fromString(""));
+    this.set("imageUrl", Value.fromString(""));
   }
 
   save(): void {
@@ -76,6 +79,10 @@ export class UpdatedGravatar extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
+
+    this.set("owner", Value.fromBytes(Bytes.empty()));
+    this.set("displayName", Value.fromString(""));
+    this.set("imageUrl", Value.fromString(""));
   }
 
   save(): void {

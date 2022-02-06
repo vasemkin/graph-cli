@@ -7,12 +7,14 @@ const chalk = require('chalk')
 const toolbox = require('gluegun/toolbox')
 
 const Schema = require('./schema')
+const AquaSchema = require('./aqua-schema')
 const Subgraph = require('./subgraph')
 const DataSourceTemplateCodeGenerator = require('./codegen/template')
 const Watcher = require('./watcher')
 const { step, withSpinner } = require('./command-helpers/spinner')
 const { applyMigrations } = require('./migrations')
 const { GENERATED_FILE_NOTE } = require('./codegen/typescript')
+const { GENERATED_FILE_NOTE: GENERATED_FILE_NOTE_AQUA } = require('./codegen/aqua')
 const { displayPath } = require('./command-helpers/fs')
 
 module.exports = class TypeGenerator {
@@ -58,7 +60,8 @@ module.exports = class TypeGenerator {
       }
 
       let schema = await this.loadSchema(subgraph)
-      await this.generateTypesForSchema(schema)
+      let aquaSchema = await this.loadAquaSchema(subgraph)
+      await this.generateTypesForSchema(schema, aquaSchema)
 
       toolbox.print.success('\nTypes generated successfully\n')
       return true
@@ -105,7 +108,22 @@ module.exports = class TypeGenerator {
     )
   }
 
-  async generateTypesForSchema(schema) {
+  async loadAquaSchema(subgraph) {
+    let maybeRelativePath = subgraph.getIn(['schema', 'file'])
+    let absolutePath = path.resolve(this.sourceDir, maybeRelativePath)
+    return await withSpinner(
+      `Load GraphQL schema from ${displayPath(absolutePath)}`,
+      `Failed to load GraphQL schema from ${displayPath(absolutePath)}`,
+      `Warnings while loading GraphQL schema from ${displayPath(absolutePath)}`,
+      async spinner => {
+        let maybeRelativePath = subgraph.getIn(['schema', 'file'])
+        let absolutePath = path.resolve(this.sourceDir, maybeRelativePath)
+        return AquaSchema.load(absolutePath)
+      },
+    )
+  }
+
+  async generateTypesForSchema(schema, aquaSchema) {
     return await withSpinner(
       `Generate types for GraphQL schema`,
       `Failed to generate types for GraphQL schema`,
@@ -124,10 +142,20 @@ module.exports = class TypeGenerator {
           },
         )
 
+        // Generate Aqua module from schema
+        let aquaGenerator = aquaSchema.codeGenerator()
+        let aquaCode = 
+        [
+          GENERATED_FILE_NOTE_AQUA,
+          ...aquaGenerator.generateTypes(),
+        ].join('\n')
+
         let outputFile = path.join(this.options.outputDir, 'schema.ts')
+        let aquaFile = path.join(this.options.outputDir, 'schema.aqua')
         step(spinner, 'Write types to', displayPath(outputFile))
         await fs.mkdirs(path.dirname(outputFile))
         await fs.writeFile(outputFile, code)
+        await fs.writeFile(aquaFile, aquaCode)
       },
     )
   }
