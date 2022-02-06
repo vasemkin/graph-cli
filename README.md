@@ -3,14 +3,14 @@
 [![npm (scoped)](https://img.shields.io/npm/v/@graphprotocol/graph-cli.svg)](https://www.npmjs.com/package/@graphprotocol/graph-cli)
 [![Build Status](https://travis-ci.org/graphprotocol/graph-cli.svg?branch=master)](https://travis-ci.org/graphprotocol/graph-cli)
 
-## The Graph Command Line Interface
+## The Graph Command Line Interface with Aqua integration
 
 As of today, the command line interface supports the following commands:
 
 - `graph init` — Creates a new subgraph project from an example or an existing contract.
 - `graph create` — Registers a subgraph name with a Graph Node.
 - `graph remove` — Unregisters a subgraph name with a Graph Node.
-- `graph codegen` — Generates AssemblyScript types for smart contract ABIs and the subgraph schema.
+- `graph codegen` — Generates AssemblyScript and Aqua types for smart contract ABIs and the subgraph schema.
 - `graph build` — Compiles a subgraph to WebAssembly.
 - `graph deploy` — Deploys a subgraph to a [Graph Node](https://github.com/graphprotocol/graph-node).
 - `graph auth` — Stores a [Graph Node](https://github.com/graphprotocol/graph-node) access token in the system's keychain.

@@ -96,7 +96,6 @@ class ModuleImports {
   }
 }
 
-
 const product = (name, options) => new Product(name, options)
 const field = (name, type) => new Field(name, type)
 const nullableType = type => new NullableType(type)

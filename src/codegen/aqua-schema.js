@@ -7,7 +7,6 @@ const List = immutable.List
 module.exports = class AquaSchemaCodeGenerator {
   constructor(schema) {
     this.schema = schema
-    console.log('generating aqua for schema: ' + schema)
   }
 
   generateModuleImports() {
